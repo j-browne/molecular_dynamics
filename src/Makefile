@@ -1,18 +1,21 @@
-FC      = gfortran
-FFLAGS  = -Wall -Wextra -O3 -fimplicit-none -march=native 
-#FFLAGS += -pedantic -fbounds-check -fmax-errors=1 -g
-FFLAGS += $(shell pkg-config --cflags plplotd-f95)
-LDFLAGS = $(shell pkg-config --libs plplotd-f95)
+CC      = g++
+#CFLAGS  = -Wall -Wextra -O3 -march=native 
+CFLAGS += -pedantic -g
+#FFLAGS += $(shell pkg-config --cflags plplotd-f95)
+#LDFLAGS = $(shell pkg-config --libs plplotd-f95)
 LIBS    =
 
-COMPILE = $(FC) $(FFLAGS)
-LINK = $(FC) $(LDFLAGS)
+COMPILE = $(CC) $(CFLAGS)
+LINK = $(CC) $(LDFLAGS)
 
 TARGET = md.exe       # Name of final executable to produce
-OBJS = md_plot.o md.o # List of object dependencies
+OBJS = md.o vec3.o particle.o # List of object dependencies
 
 $(TARGET): $(OBJS)
 	$(LINK) -o $@ $^ $(LIBS)
 
-%.o:%.f95
+%.o:%.cpp
 	$(COMPILE) -c $<
+
+clean: 
+	rm $(OBJS)
