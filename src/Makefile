@@ -9,7 +9,7 @@ COMPILE = $(CC) $(CFLAGS)
 LINK = $(CC) $(LDFLAGS)
 
 TARGET = md.exe       # Name of final executable to produce
-OBJS = md.o vec3.o particle.o # List of object dependencies
+OBJS = md.o vec3.o particle.o rand_tools.o # List of object dependencies
 
 $(TARGET): $(OBJS)
 	$(LINK) -o $@ $^ $(LIBS)

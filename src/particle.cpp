@@ -1,6 +1,9 @@
 #include "vec3.h"
 #include "particle.h"
 
+particle::particle(): mass(0), pos(0,0,0), vel(0,0,0), acc(0,0,0) {
+}
+
 void particle::setMass(double m) {
 	mass = m;
 }

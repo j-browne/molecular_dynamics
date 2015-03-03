@@ -10,6 +10,8 @@ private:
 	vec3 vel;
 	vec3 acc;
 public:
+	particle();
+
 	void setMass(double m);
 	void setPos(const vec3& p);
 	void setVel(const vec3& v);
