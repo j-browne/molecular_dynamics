@@ -8,6 +8,9 @@
 
 using namespace std;
 
+void init(vector<particle>& ps, int L);
+void sim(vector<particle>& ps, int L);
+
 ostream& operator<< (ostream& os, const vec3& v) {
 	os << v.getX() << "\t" << v.getY() << "\t" << v.getZ();
 	return os;
@@ -16,16 +19,28 @@ ostream& operator<< (ostream& os, const vec3& v) {
 int main (int argc, char* argv[]) {
 	// Options
 	int L = 2; // number of times to repeat lattice in each dir
-	double b = 1; // size of lattice
 	vector<particle> ps;
-	vec3 vcm = vec3(0,0,0);
-	double mcm = 0;
 
-	// Seed RNG
 	// TODO: allow seed input
+	// Seed RNG
 	srand(time(NULL));
 
 	// Set up initial conditions
+	init(ps, L);
+
+	// Do simulation
+	sim(ps, L);
+}
+
+void init(vector<particle>& ps, int L) {
+	double mass = 1;
+	double beta = 1;
+	double stddev = mass * beta;
+	double b = 1; // size of lattice
+
+	vec3 vcm = vec3(0,0,0); // center of momentum velocity
+	double mcm = 0; // total mass
+
 	for (int i = 0; i < L; ++i) {
 		for (int j = 0; j < L; ++j) {
 			for (int k = 0; k < L; ++k) {
@@ -36,9 +51,6 @@ int main (int argc, char* argv[]) {
 				p3.setPos(vec3((i+.5)*b,j*b,(k+.5)*b));
 				p4.setPos(vec3((i+.5)*b,(j+.5)*b,k*b));
 				// Set initial velocities
-				float mass = 1;
-				float beta = 1;
-				float stddev = mass * beta;
 				p1.setVel(vec3(rand_gaus(0,stddev),rand_gaus(0,stddev),rand_gaus(0,stddev)));
 				p2.setVel(vec3(rand_gaus(0,stddev),rand_gaus(0,stddev),rand_gaus(0,stddev)));
 				p3.setVel(vec3(rand_gaus(0,stddev),rand_gaus(0,stddev),rand_gaus(0,stddev)));
@@ -62,6 +74,27 @@ int main (int argc, char* argv[]) {
 		it->setVel(it->getVel() - vcm);
 		cout << it->getPos() << '\t' << it->getVel() << endl;
 	}
+}
 
-	// Do simulation
+void sim(vector<particle>& ps, int L) {
+	int N = 10;
+	double dt = .001;
+
+	for (int i = 0; i < N; ++i) {
+		cout << endl;
+		for (vector<particle>::iterator it = ps.begin(); it != ps.end(); ++it) {
+			// Verlet Integration
+			it->setVel(it->getVel() + it->getAcc()*dt/2);
+			it->setPos(it->getPos() + it->getVel()*dt);
+
+			for (vector<particle>::iterator jt = ps.begin(); jt != ps.end(); ++jt) {
+				if (it != jt) {
+				}
+			}
+
+			it->setVel(it->getVel() + it->getAcc()*dt/2);
+
+			cout << it->getPos() << '\t' << it->getVel() << endl;
+		}
+	}
 }
