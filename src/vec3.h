@@ -14,8 +14,8 @@ public:
 	double getY() const;
 	double getZ() const;
 
-	double mag();
-	vec3 unit();
+	double mag() const;
+	vec3 unit() const;
 	static double dot(const vec3& v1, const vec3& v2);
 	static vec3 cross(const vec3& v1, const vec3& v2);
 };

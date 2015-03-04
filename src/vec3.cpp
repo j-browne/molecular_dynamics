@@ -31,11 +31,11 @@ double vec3::getZ() const {
 	return val[2];
 }
 
-double vec3::mag() {
+double vec3::mag() const {
 	return sqrt(vec3::dot(*this, *this));
 }
 
-vec3 vec3::unit() {
+vec3 vec3::unit() const {
 	return *this/mag();
 }
 
