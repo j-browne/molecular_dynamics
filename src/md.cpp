@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include "vec3.h"
 #include "particle.h"
 #include "rand_tools.h"
@@ -10,6 +11,7 @@ using namespace std;
 
 void init(vector<particle>& ps, int L);
 void sim(vector<particle>& ps, int L);
+vec3 forceLJ(const vec3& r, double ep, double sig);
 
 ostream& operator<< (ostream& os, const vec3& v) {
 	os << v.getX() << "\t" << v.getY() << "\t" << v.getZ();
@@ -84,11 +86,16 @@ void sim(vector<particle>& ps, int L) {
 		cout << endl;
 		for (vector<particle>::iterator it = ps.begin(); it != ps.end(); ++it) {
 			// Verlet Integration
+			// TODO: make sure particle stays within boundaries
 			it->setVel(it->getVel() + it->getAcc()*dt/2);
 			it->setPos(it->getPos() + it->getVel()*dt);
 
+			it->setAcc(vec3(0,0,0));
 			for (vector<particle>::iterator jt = ps.begin(); jt != ps.end(); ++jt) {
 				if (it != jt) {
+					// TODO: calculate accel at an earlier point? the positions aren't consistent
+					// TODO: do this for periodic boundary
+					it->setAcc(it->getAcc() + forceLJ(jt->getPos() - it->getPos(),1,1)/it->getMass());
 				}
 			}
 
@@ -97,4 +104,9 @@ void sim(vector<particle>& ps, int L) {
 			cout << it->getPos() << '\t' << it->getVel() << endl;
 		}
 	}
+}
+
+// Lennard-Jones Force
+vec3 forceLJ(const vec3& r, double ep, double sig) {
+	return -24*ep*(2*(pow(sig,12)/pow(r.mag(),13)-pow(sig,6)/pow(r.mag(),7)))*r.unit();
 }
