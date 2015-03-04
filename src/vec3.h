@@ -7,9 +7,11 @@ private:
 public:
 	vec3(double x, double y, double z);
 
+	void set(int i, double x);
 	void setX(double x);
 	void setY(double y);
 	void setZ(double z);
+	double get(int i) const;
 	double getX() const;
 	double getY() const;
 	double getZ() const;
