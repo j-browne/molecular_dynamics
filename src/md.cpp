@@ -18,6 +18,8 @@ int main (int argc, char* argv[]) {
 	int L = 2; // number of times to repeat lattice in each dir
 	double b = 1; // size of lattice
 	vector<particle> ps;
+	vec3 vcm = vec3(0,0,0);
+	double mcm = 0;
 
 	// Seed RNG
 	// TODO: allow seed input
@@ -42,8 +44,9 @@ int main (int argc, char* argv[]) {
 				p3.setVel(vec3(rand_gaus(0,stddev),rand_gaus(0,stddev),rand_gaus(0,stddev)));
 				p4.setVel(vec3(rand_gaus(0,stddev),rand_gaus(0,stddev),rand_gaus(0,stddev)));
 
-				// Determine center of mass velocity
-				
+				// Determine center of momentum velocity
+				vcm = vcm + p1.getVel() + p2.getVel() + p3.getVel() + p4.getVel();
+				mcm = mcm + p1.getMass() + p2.getMass() + p3.getMass() + p3.getMass();
 
 				ps.push_back(p1);
 				ps.push_back(p2);
@@ -52,9 +55,11 @@ int main (int argc, char* argv[]) {
 			}
 		}
 	}
-	// Subtract center of mass velocity
+	vcm = vcm/mcm;
 
+	// Subtract center of momentum velocity
 	for (vector<particle>::iterator it = ps.begin(); it != ps.end(); ++it) {
+		it->setVel(it->getVel() - vcm);
 		cout << it->getPos() << '\t' << it->getVel() << endl;
 	}
 
