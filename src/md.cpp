@@ -9,8 +9,8 @@
 
 using namespace std;
 
-void init(vector<particle>& ps, int L);
-void sim(vector<particle>& ps, int L);
+void init(vector<particle>& ps, double b, int L);
+void sim(vector<particle>& ps, double b, int L);
 vec3 forceLJ(const vec3& r, double ep, double sig);
 
 ostream& operator<< (ostream& os, const vec3& v) {
@@ -21,6 +21,7 @@ ostream& operator<< (ostream& os, const vec3& v) {
 int main (int argc, char* argv[]) {
 	// Options
 	int L = 2; // number of times to repeat lattice in each dir
+	double b = 1; // size of lattice
 	vector<particle> ps;
 
 	// TODO: allow seed input
@@ -28,17 +29,16 @@ int main (int argc, char* argv[]) {
 	srand(time(NULL));
 
 	// Set up initial conditions
-	init(ps, L);
+	init(ps, b, L);
 
 	// Do simulation
-	sim(ps, L);
+	sim(ps, b, L);
 }
 
-void init(vector<particle>& ps, int L) {
+void init(vector<particle>& ps, double b, int L) {
 	double mass = 1;
 	double beta = 1;
 	double stddev = mass * beta;
-	double b = 1; // size of lattice
 
 	vec3 vcm = vec3(0,0,0); // center of momentum velocity
 	double mcm = 0; // total mass
@@ -74,11 +74,11 @@ void init(vector<particle>& ps, int L) {
 	// Subtract center of momentum velocity
 	for (vector<particle>::iterator it = ps.begin(); it != ps.end(); ++it) {
 		it->setVel(it->getVel() - vcm);
-		cout << it->getPos() << '\t' << it->getVel() << endl;
+		cout << it->getPos() << '\t' << it->getAcc() << endl;
 	}
 }
 
-void sim(vector<particle>& ps, int L) {
+void sim(vector<particle>& ps, double b, int L) {
 	int N = 10;
 	double dt = .001;
 
@@ -86,22 +86,39 @@ void sim(vector<particle>& ps, int L) {
 		cout << endl;
 		for (vector<particle>::iterator it = ps.begin(); it != ps.end(); ++it) {
 			// Verlet Integration
-			// TODO: make sure particle stays within boundaries
 			it->setVel(it->getVel() + it->getAcc()*dt/2);
 			it->setPos(it->getPos() + it->getVel()*dt);
+			// Make sure particle stays within boundaries
+			vec3 pos = it->getPos();
+			for (int j=0; j < 3; ++j) {
+				if (pos.get(j) < 0) {
+					pos.set(j,pos.get(j)+b*L);
+				}
+				else if (pos.get(j) > b*L) {
+					pos.set(j,pos.get(j)-b*L);
+				}
+			}
+			it->setPos(pos);
 
 			it->setAcc(vec3(0,0,0));
 			for (vector<particle>::iterator jt = ps.begin(); jt != ps.end(); ++jt) {
 				if (it != jt) {
 					// TODO: calculate accel at an earlier point? the positions aren't consistent
-					// TODO: do this for periodic boundary
-					it->setAcc(it->getAcc() + forceLJ(jt->getPos() - it->getPos(),1,1)/it->getMass());
+					// Take account of periodic boundaries
+					// TODO: is this right?
+					for (int k = -1; k <= 1; ++k) {
+						for (int l = -1; l <= 1; ++l) {
+							for (int m = -1; m <= 1; ++m) {
+									it->setAcc(it->getAcc() + forceLJ(jt->getPos() + b*L*vec3(k,l,m) - it->getPos(),1,1)/it->getMass());
+							}
+						}
+					}
 				}
 			}
 
 			it->setVel(it->getVel() + it->getAcc()*dt/2);
 
-			cout << it->getPos() << '\t' << it->getVel() << endl;
+			cout << it->getPos() << '\t' << it->getAcc() << endl;
 		}
 	}
 }
