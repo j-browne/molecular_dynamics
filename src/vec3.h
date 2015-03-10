@@ -28,5 +28,6 @@ vec3 operator/(const vec3& v, double s);
 vec3 operator+(const vec3& v1, const vec3& v2);
 vec3 operator-(const vec3& v1, const vec3& v2);
 vec3 operator-(const vec3& v);
+vec3 round(const vec3& v);
 
 #endif // VEC3

@@ -90,3 +90,7 @@ vec3 operator-(const vec3& v) {
 	            -v.getY(),
 	            -v.getZ());
 }
+
+vec3 round(const vec3& v) {
+	return vec3(round(v.get(0)), round(v.get(1)), round(v.get(2)));
+}
