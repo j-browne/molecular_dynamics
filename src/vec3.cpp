@@ -94,3 +94,11 @@ vec3 operator-(const vec3& v) {
 vec3 round(const vec3& v) {
 	return vec3(round(v.get(0)), round(v.get(1)), round(v.get(2)));
 }
+
+vec3 floor(const vec3& v) {
+	return vec3(floor(v.get(0)), floor(v.get(1)), floor(v.get(2)));
+}
+
+vec3 ceil(const vec3& v) {
+	return vec3(ceil(v.get(0)), ceil(v.get(1)), ceil(v.get(2)));
+}
