@@ -90,29 +90,17 @@ void sim(vector<particle>& ps, double b, int L) {
 			it->setPos(it->getPos() + it->getVel()*dt);
 			// Make sure particle stays within boundaries
 			vec3 pos = it->getPos();
-			for (int j=0; j < 3; ++j) {
-				if (pos.get(j) < 0) {
-					pos.set(j,pos.get(j)+b*L);
-				}
-				else if (pos.get(j) > b*L) {
-					pos.set(j,pos.get(j)-b*L);
-				}
-			}
+			pos = pos - floor(pos/(b*L))*(b*L);
 			it->setPos(pos);
 
 			it->setAcc(vec3(0,0,0));
 			for (vector<particle>::iterator jt = ps.begin(); jt != ps.end(); ++jt) {
 				if (it != jt) {
 					// TODO: calculate accel at an earlier point? the positions aren't consistent
-					// Take account of periodic boundaries
-					// TODO: is this right?
-					for (int k = -1; k <= 1; ++k) {
-						for (int l = -1; l <= 1; ++l) {
-							for (int m = -1; m <= 1; ++m) {
-									it->setAcc(it->getAcc() + forceLJ(jt->getPos() + b*L*vec3(k,l,m) - it->getPos(),1,1)/it->getMass());
-							}
-						}
-					}
+					// Take account of periodic boundaries, use minimum distance
+					vec3 r = jt->getPos()-it->getPos();
+					r = r - round(r/(b*L)) * (b*L);
+					it->setAcc(it->getAcc() + forceLJ(r,1,1)/it->getMass());
 				}
 			}
 
