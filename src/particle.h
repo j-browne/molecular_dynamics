@@ -19,6 +19,7 @@ public:
 	double getMass() const;
 	vec3 getPos() const;
 	vec3 getVel() const;
+	vec3 getMom() const;
 	vec3 getAcc() const;
 };
 

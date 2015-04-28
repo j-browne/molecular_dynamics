@@ -1,0 +1,17 @@
+#kB=1.3806488E-23
+#JtoeV=6.24150934E18
+kB=8.6173324E-5
+ep=125.7*kB
+sig=3.345E-1
+
+unset key
+set yrange [-2E-2:2E-2]
+set xrange [0:1]
+
+set xlabel "Distance (nm)"
+set ylabel "Potential (eV)"
+
+set term png enhanced
+set output "LJpot.png"
+plot 4*ep*((sig/x)**12-(sig/x)**6) lw 3
+

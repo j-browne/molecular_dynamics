@@ -1,0 +1,11 @@
+stops=1e12
+
+unset key
+
+set xlabel "Time (ps)"
+set ylabel "Energy (J)"
+
+set term png enhanced
+set output "energy_cons.png"
+plot './t300.out' u ($1*stops):($2+$3) w l
+

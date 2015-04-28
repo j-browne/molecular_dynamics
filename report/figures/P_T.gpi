@@ -1,0 +1,16 @@
+mtonm=1e9
+
+unset key
+
+set xlabel "Temperature (K)"
+set ylabel "Pressure (Pa)"
+
+#p0=2.19351e+05
+#p1=2.86595e+05
+p0 = 140613
+p1 = 286828
+
+set term png enhanced
+set output "P_T.png"
+plot './avg.txt' u 5:7:6:8 w xyerrorbars, p0+p1*x lw 3
+

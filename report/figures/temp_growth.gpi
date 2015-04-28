@@ -1,0 +1,11 @@
+mtonm=1e9
+
+unset key
+
+set xlabel "Time Step"
+set ylabel "Position (nm)"
+
+set term png enhanced
+set output "temp_growth.png"
+plot './temp_growth.dat' u ($1*mtonm) w l, './temp_growth.dat' u ($4*mtonm) w l
+

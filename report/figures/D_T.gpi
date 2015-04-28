@@ -1,0 +1,13 @@
+ctok = 274.15
+
+#unset key
+
+set xlabel "Temperature (K)"
+set ylabel "Diffusion Constant (m^2/s)"
+
+p0 = 1.013E5
+
+set term png enhanced
+set output "D_T.png"
+plot './avg.txt' u 5:($9*$7/p0):6:(sqrt(($10/$9)**2+($8/$7)**2)*$9*$7/p0) w xyerrorbars t "Simulation", './diff_const.dat' u ($1+ctok):2 w l t "Experiment"
+

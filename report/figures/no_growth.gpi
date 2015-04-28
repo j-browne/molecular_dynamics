@@ -1,0 +1,11 @@
+mtonm=1e9
+
+unset key
+
+set xlabel "Time Step"
+set ylabel "Position (nm)"
+
+set term png enhanced
+set output "no_growth.png"
+plot './no_growth.dat' u ($1*mtonm) w l, './no_growth.dat' u ($4*mtonm) w l
+

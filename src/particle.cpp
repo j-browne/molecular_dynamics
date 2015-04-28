@@ -32,6 +32,10 @@ vec3 particle::getVel() const {
 	return vel;
 }
 
+vec3 particle::getMom() const {
+	return mass*vel;
+}
+
 vec3 particle::getAcc() const {
 	return acc;
 }
